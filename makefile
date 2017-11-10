@@ -5,7 +5,7 @@ OBJS = $(addprefix $(ODIR)/, mc.o particle.o system.o)
 
 SDIR = src
 IDIR = include
-DEPS = $(addprefix $(IDIR)/, particle.hpp, system.hpp)
+DEPS = $(addprefix $(IDIR)/, particle.hpp system.hpp)
 
 CC = g++ -std=c++11
 CFLAGS = -c -I $(IDIR)
