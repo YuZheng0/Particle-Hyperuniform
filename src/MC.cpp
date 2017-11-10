@@ -73,6 +73,7 @@ void saveData(std::vector<std::vector<double>> &coords, std::string nameOfFile)
 
 int main()
 {
+	// Declare variables.
 	double density;
 	double radius;
 	const int length = 1;
