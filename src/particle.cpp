@@ -1,19 +1,20 @@
 #include <cmath>
-#include "particle.hpp"
-#include "system.hpp"
+#include "..\include\particle.hpp"
+#include "..\include\system.hpp"
 
 
-Particle::Particle(double initX, double initY, double initRadius): radius(initRadius)
+Particle::Particle(double initX, double initY, double initRadius)
 {
 	x = initX;
 	y = initY;
+	radius = initRadius;
 }
 
-/*void Particle::move(double dx, double dy)
+void Particle::move(double dx, double dy)
 {
 	x += dx;
 	y += dy;
-}*/
+}
 
 double Particle::distance(Particle other)
 {
@@ -32,9 +33,9 @@ double Particle::boundaryDistance(Particle other, double length)
 	return std::sqrt(tempx * tempx + tempy * tempy);
 }
 
-bool Particle::isOverlap(Particle other)
+bool Particle::isOverlap(Particle other, double length)
 {
-	if (distance(other) < radius + other.radius)
+	if (boundaryDistance(other, length) < radius + other.radius)
 		return true;
 	else
 		return false;

@@ -1,11 +1,14 @@
 #include <vector>
 #include <cmath>
-#include "system.hpp"
+#include "..\include\system.hpp"
 
 
-System::System(double initDensity, double radius, double l):length(l)
+System::System() {}
+
+System::System(double initDensity, double radius, double l)
 {
 	const double pi = 3.1415926;
+	length = l;
 	density = initDensity;
 	number = int(density / (pi * radius * radius));
 
@@ -18,12 +21,19 @@ System::System(double initDensity, double radius, double l):length(l)
 	}
 }
 
+int System::numberOfParticles()
+{
+	int i;
+	i = particles.size();
+	return i;
+}
+
 bool System::addParticle(Particle particle)
 {
 	bool overlap = false;
 	for (std::size_t i = 0; i < particles.size(); i++)
 	{
-		if (particles[i].isOverlap(particle))
+		if (particles[i].isOverlap(particle, length))
 		{
 			overlap = true;
 			break;
@@ -93,23 +103,46 @@ double System::g2(double r, double sizeBin)
 	return g2Value;
 }
 
-/*void System::envolve(System state, double moveRange)
+void System::evolve(double moveRange, int k)
 {
-double dx, dy;
-std::vector<std::vector<double>> oldCoords = state.coordinates();
-for (std::size_t i = 0; i < particles.size(); i++)
-{
-dx = moveRange*length*(std::rand() / double(RAND_MAX) - 0.5);
-dy = moveRange*length*(std::rand() / double(RAND_MAX) - 0.5);
-particles[i].move(dx, dy);
-}
-for (std::size_t i = 0; i < particles.size; i++)
-{
-for (std::size_t j = 0; j < particles.size; j++)\
-{
-if (particles[i].isOverlap(particles[j])
+	double dx, dy, oldX, oldY, delta;
+	oldX = particles[k].getX();
+	oldY = particles[k].getY();
+	delta = 1e-10;
 
+	while (std::abs(oldX-particles[k].getX())<delta && std::abs(oldY-particles[k].getY())<delta)
+	{
+		dx = moveRange*(std::rand() / double(RAND_MAX) - 0.5);
+		dy = moveRange*(std::rand() / double(RAND_MAX) - 0.5);
 
+		particles[k].move(dx, dy);
+		// Consider the boundary conditions.
+		if (particles[k].getX() < 0)
+		{
+			particles[k].move(length, 0);
+			dx = dx + length;
+		}
+		if (particles[k].getX() > length)
+		{
+			particles[k].move(-length, 0);
+			dx = dx - length;
+		}
+		if (particles[k].getY() < 0)
+		{
+			particles[k].move(0, length);
+			dy = dy + length;
+		}
+		if (particles[k].getY() > length)
+		{
+			particles[k].move(0, -length);
+			dy = dy - length;
+		}
+
+		for (std::size_t i = 0; i < particles.size(); i++)
+		{
+			if (k!=i && particles[k].isOverlap(particles[i], length))
+				particles[k].move(-dx, -dy);
+		}
+	}
+	
 }
-}
-}*/

@@ -3,8 +3,8 @@
 #include <random>
 #include <vector>
 #include <chrono>
-#include "particle.hpp"
-#include "system.hpp"
+#include "..\include\particle.hpp"
+#include "..\include\system.hpp"
 
 
 const double K = 1.38e-23;
@@ -74,10 +74,11 @@ void saveData(std::vector<std::vector<double>> &coords, std::string nameOfFile)
 int main()
 {
 	// Declare variables.
+	const double pi = 3.1415926;
 	double density;
 	double radius;
 	const int length = 1;
-	int numberOfMC;
+	int numberOfMC, number; //number is the number of particles.
 	std::vector<System> systems;
 
 	std::cout << "Enter the density of partiles: ";
@@ -90,18 +91,31 @@ int main()
 	System state(density, radius, length);            //It is a initial configuration.
 	//saveData(g2Function(state, 0.01, 0.01, length),"g2");
 	systems.push_back(state);
+	System stateOld;
+	stateOld = state;
+	number = state.numberOfParticles();
 
-	for (int i = 0; i < numberOfMC; i++)               //It is the MC method.  
+	
+	for (int i = 0; i < numberOfMC*number; i++)               //It is the MC method.  
 	{
-		System anotherState(density, radius, length);
-		std::cout << "\r   State " << i + 2 << '/' << numberOfMC+1 << "  has been generated." << std::flush;
-		if (isAccepted(state, anotherState))
-			systems.push_back(anotherState);
-		else systems.push_back(state);
+		int k;
+		k = std::rand() % number;
+		state.evolve(0.1, k);
+		std::cout << "\r   Particles " << i + 1 << '/' << numberOfMC*number+1 << "  is moving." << std::flush;
+		if (isAccepted(stateOld, state))
+		{
+			systems.push_back(state);
+			stateOld = state;
+		}
+		else 
+		{
+			systems.push_back(stateOld);
+			state = stateOld;
+		}
 	}
 
 	std::cout << std::endl;
-	saveData(averageOfg2(systems, 0.01, 0.01, 0.05, length),"density-0.5_radius-0.05_sizebin-0.05-averageOfg2");
+	saveData(averageOfg2(systems, 0.01, 0.01, 0.02, length), "density-0.5_radius-0.05_sizebin-0.02-averageOfg2");
 	
 }
 
