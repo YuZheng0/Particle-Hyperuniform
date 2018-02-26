@@ -14,8 +14,7 @@ public:
 	// void getDistance();
 	double getEnergy();
 	std::vector<std::vector<double>> coordinates();
-	//System & operator=(const System& other);
-	double g2(double,double);
+	//double g2(double,double);
 	void evolve(double, int);
 private:
 	std::vector<Particle> particles;

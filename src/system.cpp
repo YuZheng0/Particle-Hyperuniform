@@ -77,7 +77,7 @@ std::vector<std::vector<double>> System::coordinates()
 	return coords;
 }
 
-double System::g2(double r, double sizeBin)
+/*double System::g2(double r, double sizeBin)
 {
 	const double pi = 3.1415926;
 	std::vector<double> distanceForG2;
@@ -101,7 +101,7 @@ double System::g2(double r, double sizeBin)
 
 	g2Value = numberForG2 / (particles.size() * (particles.size()/(length*length)) * 2 * pi * r * deltaR);
 	return g2Value;
-}
+}*/
 
 void System::evolve(double moveRange, int k)
 {
