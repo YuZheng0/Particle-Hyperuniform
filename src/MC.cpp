@@ -101,17 +101,21 @@ int main()
 	// Declare variables.
 	const double pi = 3.1415926;
 	double density;
+	density = 0.5;
 	double radius;
+	radius = 0.02;
 	const int length = 1;
 	int numberOfMC, number; //number is the number of particles.
+	numberOfMC = 1000;
 	std::vector<System> systems;
 
-	std::cout << "Enter the density of partiles: ";
+	/*std::cout << "Enter the density of partiles: ";
 	std::cin >> density;
 	std::cout << "Enter the radius of particles: ";
 	std::cin >> radius;
 	std::cout << "How many times to run MC: ";
 	std::cin >> numberOfMC;
+	*/
 
 	System state(density, radius, length);            //It is a initial configuration.
 	//saveData(g2Function(state, 0.01, 0.01, length),"g2");
@@ -130,19 +134,20 @@ int main()
 		std::cout << "\r   Particles " << i + 1 << '/' << numberOfMC*number+1 << "  is moving." << std::flush;
 		if (isAcceptedSk(stateOld, state, kx, ky))
 		{
-			systems.push_back(state);
+			//systems.push_back(state);
 			stateOld = state;
+
 		}
-		else 
+		/*else 
 		{
 			systems.push_back(stateOld);
 			state = stateOld;
-		}
+		}*/
 	}
 
 	std::cout << std::endl; 
 	int n = systems.size();
-		saveData(systems[n-1].coordinates(), std::to_string(n-1));
+		saveData(systems[n-1].coordinates(), std::to_string(number));
 }
 
 
