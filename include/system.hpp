@@ -7,7 +7,7 @@
 class System
 {
 public:
-	System(double,double,double);
+	System(double,double,double,int);
 	System();
 	int numberOfParticles();
 	bool addParticle(Particle newParticle);

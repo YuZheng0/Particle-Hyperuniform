@@ -1,17 +1,19 @@
 #include <vector>
 #include <cmath>
+#include <ctime>
 #include "..\include\system.hpp"
 
 
 System::System() {}
 
-System::System(double initDensity, double radius, double l)
+System::System(double initDensity, double radius, double l, int N)
 {
 	const double pi = 3.1415926;
 	length = l;
 	density = initDensity;
-	number = int(density / (pi * radius * radius));
+	number = N;
 
+	srand((unsigned int)(time(NULL)));
 	while (particles.size() < number)
 	{
 		double x = length*(std::rand() / double(RAND_MAX));
@@ -109,7 +111,8 @@ void System::evolve(double moveRange, int k)
 	oldX = particles[k].getX();
 	oldY = particles[k].getY();
 	delta = 1e-10;
-
+	
+	srand((unsigned int)(time(NULL)));
 	while (std::abs(oldX-particles[k].getX())<delta && std::abs(oldY-particles[k].getY())<delta)
 	{
 		dx = moveRange*(std::rand() / double(RAND_MAX) - 0.5);

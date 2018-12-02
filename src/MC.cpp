@@ -5,6 +5,7 @@
 #include <chrono>
 #include <complex>
 #include <cmath>
+#include <ctime>
 #include "..\include\particle.hpp"
 #include "..\include\system.hpp"
 
@@ -56,6 +57,7 @@ bool isAcceptedE(System state, System anotherState)                    //It is f
 {
 	double deltaEnergy = anotherState.getEnergy() - state.getEnergy();  //It is the energy diffence between two state.
 	double relativePossibility = exp(-deltaEnergy / (K*T));
+	srand((unsigned int)(time(NULL)));
 	double test = std::rand() / double(RAND_MAX);
 	if (test < relativePossibility)
 		return true;
@@ -80,7 +82,11 @@ double sk(System state, double kx, double ky)
 
 bool isAcceptedSk(System state, System anotherState, double kx, double ky)
 {
-	if (sk(anotherState, kx, ky) < sk(state, kx, ky))
+	double deltaEnergy = sk(anotherState, kx, ky) - sk(state, kx, ky);  //It is the sk diffence between two state.
+	double relativePossibility = exp(-deltaEnergy / (K*T));
+	srand((unsigned int)(time(NULL)));
+	double test = std::rand() / double(RAND_MAX);
+	if (test < relativePossibility)
 		return true;
 	else return false;
 }
@@ -101,53 +107,58 @@ int main()
 	// Declare variables.
 	const double pi = 3.1415926;
 	double density;
-	density = 0.5;
+	//density = 0.5;
 	double radius;
-	radius = 0.02;
+	//radius = 0.02;
 	const int length = 1;
 	int numberOfMC, number; //number is the number of particles.
-	numberOfMC = 1000;
+	numberOfMC = 100;
+
 	std::vector<System> systems;
 
 	/*std::cout << "Enter the density of partiles: ";
 	std::cin >> density;
 	std::cout << "Enter the radius of particles: ";
 	std::cin >> radius;
-	std::cout << "How many times to run MC: ";
-	std::cin >> numberOfMC;
 	*/
 
-	System state(density, radius, length);            //It is a initial configuration.
-	//saveData(g2Function(state, 0.01, 0.01, length),"g2");
-	systems.push_back(state);
-	System stateOld;
-	stateOld = state;
-	number = state.numberOfParticles();
-	double kx = (2 * pi) / length;
-	double ky = (2 * pi) / length;
-	
-	for (int i = 0; i < numberOfMC*number; i++)               //It is the MC method.  
-	{
-		int k;
-		k = std::rand() % number;
-		state.evolve(0.1, k);
-		std::cout << "\r   Particles " << i + 1 << '/' << numberOfMC*number+1 << "  is moving." << std::flush;
-		if (isAcceptedSk(stateOld, state, kx, ky))
-		{
-			//systems.push_back(state);
-			stateOld = state;
+		radius = 0.02;
+		density = 0.5;
+		number = int(density / (pi * radius * radius));
 
+		//saveData(g2Function(state, 0.01, 0.01, length),"g2");
+		System state(density, radius, length, number);            //It is a initial configuration.
+		systems.push_back(state);
+		System stateOld;
+		stateOld = state;
+		double kx = (2 * pi) / length;
+		double ky = (2 * pi) / length;
+
+		srand((unsigned int)(time(NULL)));
+		for (int i = 0; i < numberOfMC*number; i++)               //It is the MC method.  
+		{
+			int k;
+			k = std::rand() % number;
+			state.evolve(0.1, k);
+			std::cout << "\r   Particles " << i + 1 << '/' << numberOfMC*number + 1 << "  is moving." << std::flush;
+			if (isAcceptedSk(stateOld, state, kx, ky))
+			{
+				//systems.push_back(state);
+				stateOld = state;
+
+			}
+			/*else
+			{
+				//systems.push_back(stateOld);
+				state = stateOld;
+			}*/
 		}
-		/*else 
-		{
-			systems.push_back(stateOld);
-			state = stateOld;
-		}*/
-	}
 
-	std::cout << std::endl; 
-	int n = systems.size();
-		saveData(systems[n-1].coordinates(), std::to_string(number));
+		std::cout << std::endl;
+		//int n = systems.size();
+		//saveData(systems[n - 1].coordinates(), "density_" + std::to_string(density) + "-radius_" + std::to_string(radius) + "-number_" + std::to_string(number) + "-numberMC_" + std::to_string(numberOfMC));
+		saveData(stateOld.coordinates(), "density_" + std::to_string(density) + "-radius_" + std::to_string(radius) + "-number_" + std::to_string(number) + "-numberMC_" + std::to_string(numberOfMC));
+
 }
 
 
